@@ -533,6 +533,104 @@ body::before {
     box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
 }
 
+/* Product input container */
+.product-input-container {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.product-input-container input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Product suggestions dropdown */
+.product-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-suggestions.show {
+    display: block;
+}
+
+.suggestion-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+    font-size: 0.9rem;
+}
+
+.suggestion-item:hover {
+    background-color: #f8fafc;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+/* Popular products section */
+.popular-products {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.popular-products h4 {
+    color: #374151;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.popular-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.popular-product-item {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.popular-product-item:hover {
+    background: #e0f2fe;
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+}
+
+.popular-product-item.selected {
+    background: #3b82f6;
+    color: white;
+    border-color: #1d4ed8;
+}
+
 /* Список продуктов */
 .products-list {
     display: grid;

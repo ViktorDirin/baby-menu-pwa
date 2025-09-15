@@ -162,7 +162,10 @@
             <div class="add-product-section">
                 <h3>Add product:</h3>
                 <div class="add-product-form">
-                    <input type="text" id="new-product" placeholder="e.g. apple, banana, carrot">
+                    <div class="product-input-container">
+                        <input type="text" id="new-product" placeholder="Type product name or select from list...">
+                        <div id="product-suggestions" class="product-suggestions"></div>
+                    </div>
                     <select id="product-category" class="category-select">
                         <option value="fruits">🍎 Fruits</option>
                         <option value="vegetables">🥕 Vegetables</option>
@@ -172,6 +175,12 @@
                         <option value="other">🍯 Other</option>
                     </select>
                     <button onclick="addProduct()" class="add-product-btn">+</button>
+                </div>
+                <div class="popular-products">
+                    <h4>Popular products:</h4>
+                    <div id="popular-products-list" class="popular-products-grid">
+                        <!-- Popular products will be loaded here -->
+                    </div>
                 </div>
             </div>
             

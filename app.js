@@ -99,6 +99,8 @@ function showProductsPage() {
     if (!currentBaby) return;
     showPage('products-page');
     updateProductsList();
+    updatePopularProducts();
+    initProductAutocomplete();
 }
 
 function showWeeklyPlannerPage() {
@@ -113,37 +115,69 @@ const PRODUCT_CATEGORIES = {
         name: 'Fruits',
         color: '#10b981',
         icon: '🍎',
-        minAge: 4
+        minAge: 4,
+        products: [
+            'Apple', 'Banana', 'Pear', 'Peach', 'Apricot', 'Plum', 'Grape', 
+            'Strawberry', 'Raspberry', 'Blueberry', 'Orange', 'Mandarin', 
+            'Lemon', 'Kiwi', 'Pineapple', 'Melon', 'Watermelon', 'Cherry',
+            'Cranberry', 'Blackberry', 'Pomegranate', 'Mango', 'Papaya'
+        ]
     },
     'vegetables': {
         name: 'Vegetables', 
         color: '#059669',
         icon: '🥕',
-        minAge: 4
+        minAge: 4,
+        products: [
+            'Carrot', 'Broccoli', 'Zucchini', 'Potato', 'Beetroot', 'Pumpkin', 
+            'Cabbage', 'Tomato', 'Cucumber', 'Cauliflower', 'Eggplant', 
+            'Bell Pepper', 'Onion', 'Garlic', 'Spinach', 'Lettuce', 'Radish',
+            'Turnip', 'Sweet Potato', 'Green Beans', 'Peas', 'Corn'
+        ]
     },
     'grains': {
         name: 'Grains & Cereals',
         color: '#d97706',
         icon: '🌾',
-        minAge: 4
+        minAge: 4,
+        products: [
+            'Rice', 'Buckwheat', 'Oatmeal', 'Millet', 'Corn', 'Barley', 
+            'Wheat', 'Rye', 'Quinoa', 'Bulgur', 'Semolina', 'Pearl Barley',
+            'Brown Rice', 'Wild Rice', 'Amaranth', 'Spelt'
+        ]
     },
     'proteins': {
         name: 'Proteins',
         color: '#dc2626',
         icon: '🥩',
-        minAge: 6
+        minAge: 6,
+        products: [
+            'Chicken', 'Turkey', 'Beef', 'Pork', 'Fish', 'Eggs', 'Cottage Cheese',
+            'Yogurt', 'Kefir', 'Cheese', 'Tofu', 'Lentils', 'Beans', 'Chickpeas',
+            'Salmon', 'Cod', 'Tuna', 'Shrimp', 'Lamb'
+        ]
     },
     'dairy': {
         name: 'Dairy',
         color: '#7c3aed',
         icon: '🥛',
-        minAge: 6
+        minAge: 6,
+        products: [
+            'Milk', 'Kefir', 'Yogurt', 'Cottage Cheese', 'Cheese', 'Sour Cream', 
+            'Butter', 'Cream Cheese', 'Ricotta', 'Mozzarella', 'Cheddar',
+            'Goat Cheese', 'Feta', 'Greek Yogurt'
+        ]
     },
     'other': {
         name: 'Other',
         color: '#6b7280',
         icon: '🍯',
-        minAge: 4
+        minAge: 4,
+        products: [
+            'Honey', 'Nuts', 'Dried Fruits', 'Herbs', 'Spices', 'Vegetable Oil',
+            'Olive Oil', 'Coconut Oil', 'Seeds', 'Raisins', 'Dates', 'Figs',
+            'Almonds', 'Walnuts', 'Pecans', 'Coconut', 'Avocado'
+        ]
     }
 };
 
@@ -469,6 +503,12 @@ function addProduct() {
     updateProductsList();
     updateTodayProduct();
     
+    // Скрываем предложения после добавления
+    const suggestionsContainer = document.getElementById('product-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.classList.remove('show');
+    }
+    
     // Обновляем планировщик на неделю, если он открыт
     if (document.getElementById('weekly-planner-page').classList.contains('active')) {
         updateWeeklyPlanner();
@@ -613,6 +653,137 @@ function updateProductsList() {
             </div>
         `;
     }).join('');
+}
+
+// Автодополнение для продуктов
+function initProductAutocomplete() {
+    const productInput = document.getElementById('new-product');
+    const suggestionsContainer = document.getElementById('product-suggestions');
+    const categorySelect = document.getElementById('product-category');
+    
+    if (!productInput || !suggestionsContainer) return;
+    
+    // Обработчик ввода
+    productInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        const category = categorySelect.value;
+        
+        if (query.length < 1) {
+            suggestionsContainer.classList.remove('show');
+            return;
+        }
+        
+        // Получаем продукты для текущей категории
+        const categoryProducts = PRODUCT_CATEGORIES[category].products || [];
+        
+        // Фильтруем продукты по запросу
+        const filteredProducts = categoryProducts.filter(product => 
+            product.toLowerCase().includes(query)
+        );
+        
+        // Показываем предложения
+        showSuggestions(filteredProducts, query);
+    });
+    
+    // Обработчик фокуса
+    productInput.addEventListener('focus', function() {
+        if (this.value.length >= 1) {
+            const category = categorySelect.value;
+            const categoryProducts = PRODUCT_CATEGORIES[category].products || [];
+            const query = this.value.toLowerCase().trim();
+            const filteredProducts = categoryProducts.filter(product => 
+                product.toLowerCase().includes(query)
+            );
+            showSuggestions(filteredProducts, query);
+        }
+    });
+    
+    // Скрываем предложения при потере фокуса
+    productInput.addEventListener('blur', function() {
+        setTimeout(() => {
+            suggestionsContainer.classList.remove('show');
+        }, 200);
+    });
+    
+    // Обработчик выбора предложения
+    suggestionsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('suggestion-item')) {
+            productInput.value = e.target.textContent;
+            suggestionsContainer.classList.remove('show');
+            productInput.focus();
+        }
+    });
+    
+    // Обработчик смены категории
+    categorySelect.addEventListener('change', function() {
+        suggestionsContainer.classList.remove('show');
+        updatePopularProducts();
+    });
+}
+
+function showSuggestions(products, query) {
+    const suggestionsContainer = document.getElementById('product-suggestions');
+    
+    if (products.length === 0) {
+        suggestionsContainer.classList.remove('show');
+        return;
+    }
+    
+    const suggestionsHTML = products.map(product => {
+        const highlightedProduct = product.replace(
+            new RegExp(`(${query})`, 'gi'), 
+            '<strong>$1</strong>'
+        );
+        return `<div class="suggestion-item">${highlightedProduct}</div>`;
+    }).join('');
+    
+    suggestionsContainer.innerHTML = suggestionsHTML;
+    suggestionsContainer.classList.add('show');
+}
+
+// Обновление популярных продуктов
+function updatePopularProducts() {
+    const categorySelect = document.getElementById('product-category');
+    const popularProductsList = document.getElementById('popular-products-list');
+    
+    if (!categorySelect || !popularProductsList) return;
+    
+    const category = categorySelect.value;
+    const categoryInfo = PRODUCT_CATEGORIES[category];
+    const products = categoryInfo.products || [];
+    
+    // Показываем первые 12 продуктов
+    const popularProducts = products.slice(0, 12);
+    
+    popularProductsList.innerHTML = popularProducts.map(product => `
+        <div class="popular-product-item" onclick="selectPopularProduct('${product}')">
+            ${product}
+        </div>
+    `).join('');
+}
+
+function selectPopularProduct(productName) {
+    const productInput = document.getElementById('new-product');
+    const categorySelect = document.getElementById('product-category');
+    
+    if (productInput) {
+        productInput.value = productName;
+        productInput.focus();
+    }
+    
+    // Убираем выделение с других элементов
+    document.querySelectorAll('.popular-product-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Выделяем выбранный элемент
+    event.target.classList.add('selected');
+    
+    // Скрываем предложения
+    const suggestionsContainer = document.getElementById('product-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.classList.remove('show');
+    }
 }
 
 // Планировщик на неделю
