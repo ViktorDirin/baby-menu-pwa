@@ -1,0 +1,23 @@
+app.js:272 === updateTodayProduct Debug ===
+app.js:273 Today date: 2025-09-13
+app.js:274 Products: Array(12)
+app.js:275 Weekly plan: Object
+app.js:276 Has manual for today: false
+app.js:277 Manual product for today: undefined
+app.js:297 Using automatic product: 002 index: 9
+app.js:300 Final product for today: 002
+app.js:301 ===============================
+app.js:591 === updateWeeklyPlanner Debug ===
+app.js:592 Today: 2025-09-13
+app.js:593 Week start: 2025-09-07
+app.js:594 Week end: 2025-09-13
+app.js:626 Weekly planner - Date: 2025-09-07, Index: 3, Product: 4
+app.js:626 Weekly planner - Date: 2025-09-08, Index: 4, Product: 5
+app.js:626 Weekly planner - Date: 2025-09-09, Index: 5, Product: 6
+app.js:626 Weekly planner - Date: 2025-09-10, Index: 6, Product: 77
+app.js:626 Weekly planner - Date: 2025-09-11, Index: 7, Product: 888
+app.js:626 Weekly planner - Date: 2025-09-12, Index: 8, Product: 001
+app.js:626 Weekly planner - Date: 2025-09-13, Index: 9, Product: 002
+index.html:247 SW registration failed:  TypeError: Failed to register a ServiceWorker: The URL protocol of the current origin ('null') is not supported.
+    at index.html:242:41
+index.html:1 Access to internal resource at 'file:///D:/Work/Cursor%20AI%20Projects/BABY_MENU/manifest.json' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: chrome, chrome-extension, chrome-untrusted, data, http, https, isolated-app.

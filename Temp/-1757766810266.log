@@ -1,0 +1,164 @@
+index.html:247 SW registration failed:  TypeError: Failed to register a ServiceWorker: The URL protocol of the current origin ('null') is not supported.
+    at index.html:242:41
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: []
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: ['1']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 1 index: 0
+app.js:299 Final product for today: 1
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (2) ['1', '2']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 2 index: 1
+app.js:299 Final product for today: 2
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (3) ['1', '2', '3']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 1 index: 0
+app.js:299 Final product for today: 1
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (4) ['1', '2', '3', '4']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 2 index: 1
+app.js:299 Final product for today: 2
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (5) ['1', '2', '3', '4', '5']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 2 index: 1
+app.js:299 Final product for today: 2
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (6) ['1', '2', '3', '4', '5', '6']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 4 index: 3
+app.js:299 Final product for today: 4
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (7) ['1', '2', '3', '4', '5', '6', '77']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 6 index: 5
+app.js:299 Final product for today: 6
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (8) ['1', '2', '3', '4', '5', '6', '77', '888']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 6 index: 5
+app.js:299 Final product for today: 6
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (9) ['1', '2', '3', '4', '5', '6', '77', '888', '001']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 1 index: 0
+app.js:299 Final product for today: 1
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (10) ['1', '2', '3', '4', '5', '6', '77', '888', '001', '002']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 2 index: 1
+app.js:299 Final product for today: 2
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (11) ['1', '2', '3', '4', '5', '6', '77', '888', '001', '002', '885']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 6 index: 5
+app.js:299 Final product for today: 6
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (12) ['1', '2', '3', '4', '5', '6', '77', '888', '001', '002', '885', '445']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 002 index: 9
+app.js:299 Final product for today: 002
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (12) ['1', '2', '3', '4', '5', '6', '77', '888', '001', '002', '885', '445']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 002 index: 9
+app.js:299 Final product for today: 002
+app.js:300 ===============================
+app.js:619 Weekly planner - Date: 2025-09-07, Index: 3, Product: 4
+app.js:619 Weekly planner - Date: 2025-09-08, Index: 4, Product: 5
+app.js:619 Weekly planner - Date: 2025-09-09, Index: 5, Product: 6
+app.js:619 Weekly planner - Date: 2025-09-10, Index: 6, Product: 77
+app.js:619 Weekly planner - Date: 2025-09-11, Index: 7, Product: 888
+app.js:619 Weekly planner - Date: 2025-09-12, Index: 8, Product: 001
+app.js:619 Weekly planner - Date: 2025-09-13, Index: 9, Product: 002
+app.js:619 Weekly planner - Date: 2025-09-07, Index: 3, Product: 4
+app.js:619 Weekly planner - Date: 2025-09-08, Index: 4, Product: 5
+app.js:619 Weekly planner - Date: 2025-09-09, Index: 5, Product: 6
+app.js:619 Weekly planner - Date: 2025-09-10, Index: 6, Product: 77
+app.js:619 Weekly planner - Date: 2025-09-11, Index: 7, Product: 888
+app.js:619 Weekly planner - Date: 2025-09-12, Index: 8, Product: 001
+app.js:619 Weekly planner - Date: 2025-09-13, Index: 9, Product: 002
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (12) ['1', '2', '3', '4', '5', '6', '77', '888', '001', '002', '885', '445']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 002 index: 9
+app.js:299 Final product for today: 002
+app.js:300 ===============================
+app.js:271 === updateTodayProduct Debug ===
+app.js:272 Today date: 2025-09-13
+app.js:273 Products: (12) ['1', '2', '3', '4', '5', '6', '77', '888', '001', '002', '885', '445']
+app.js:274 Weekly plan: {}
+app.js:275 Has manual for today: false
+app.js:276 Manual product for today: undefined
+app.js:296 Using automatic product: 002 index: 9
+app.js:299 Final product for today: 002
+app.js:300 ===============================
+app.js:619 Weekly planner - Date: 2025-09-07, Index: 3, Product: 4
+app.js:619 Weekly planner - Date: 2025-09-08, Index: 4, Product: 5
+app.js:619 Weekly planner - Date: 2025-09-09, Index: 5, Product: 6
+app.js:619 Weekly planner - Date: 2025-09-10, Index: 6, Product: 77
+app.js:619 Weekly planner - Date: 2025-09-11, Index: 7, Product: 888
+app.js:619 Weekly planner - Date: 2025-09-12, Index: 8, Product: 001
+app.js:619 Weekly planner - Date: 2025-09-13, Index: 9, Product: 002

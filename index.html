@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Baby Menu - Feeding Planner</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Smart feeding planner for babies - plan daily complementary feeding menus with age-appropriate products">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Baby Menu">
+    <meta name="msapplication-TileColor" content="#3b82f6">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- Additional PWA Meta Tags -->
+    <meta name="application-name" content="Baby Menu">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="./index.html">
+    <meta name="msapplication-navbutton-color" content="#3b82f6">
+    <meta name="msapplication-TileImage" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0IiBoZWlnaHQ9IjE0NCIgdmlld0JveD0iMCAwIDE0NCAxNDQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNDQiIGhlaWdodD0iMTQ0IiByeD0iMTgiIGZpbGw9IiNmYmJmMjQiLz4KPHN2ZyB4PSIzNiIgeT0iMzYiIHdpZHRoPSI3MiIgaGVpZ2h0PSI3MiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMWUzYThhIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+Cjwvc3ZnPgo8L3N2Zz4K">
+    
+    <!-- Дополнительные мобильные мета-теги -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="320">
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiNmYmJmMjQiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMWUzYThhIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+Cjwvc3ZnPgo8L3N2Zz4K">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iMjIiIGZpbGw9IiNmYmJmMjQiLz4KPHN2ZyB4PSI0NSIgeT0iNDUiIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMWUzYThhIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+Cjwvc3ZnPgo8L3N2Zz4K">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiNmYmJmMjQiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMWUzYThhIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+Cjwvc3ZnPgo8L3N2Zz4K">
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI2ZiYmYyNCIvPgo8c3ZnIHg9IjgiIHk9IjgiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMWUzYThhIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIi8+Cjwvc3ZnPgo8L3N2Zz4K">
+    <link rel="icon" type="image/png" sizes="16x16" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iI2ZiYmYyNCIvPgo8c3ZnIHg9IjQiIHk9IjQiIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzFlM2E4YSI+CjxwYXRoIGQ9Ik0xMiAyTDEzLjA5IDguMjZMMjAgOUwxMy4wOSAxNS43NEwxMiAyMkwxMC45MSAxNS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIvPgo8L3N2Zz4KPC9zdmc+Cg==">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+</head>
+<body>
+    <!-- Main page -->
+    <div id="main-page" class="page active">
+        <div class="header">
+            <h1>🍎 Baby Menu</h1>
+            <p>Feeding planner for little ones</p>
+            <button id="install-btn" class="install-btn" style="display: none;">
+                📱 Install App
+            </button>
+            <div id="install-info" class="install-info" style="display: none;">
+                <p>To install this app:</p>
+                <ul>
+                    <li><strong>Chrome/Edge:</strong> Tap the menu (⋮) → "Install app"</li>
+                    <li><strong>Safari:</strong> Tap Share → "Add to Home Screen"</li>
+                    <li><strong>Firefox:</strong> Tap the menu (⋮) → "Install"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-section">
+                <h2>Welcome!</h2>
+                <p>Add a child and start planning their nutrition</p>
+            </div>
+            
+            <div class="children-list" id="children-list">
+                <!-- Children list will be loaded via JavaScript -->
+            </div>
+            
+            <button class="add-baby-btn" onclick="showAddBabyPage()">
+                <span class="btn-icon">👶</span>
+                Add Baby
+            </button>
+        </div>
+    </div>
+
+    <!-- Add baby page -->
+    <div id="add-baby-page" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showMainPage()">← Back</button>
+            <h2>Add Baby</h2>
+        </div>
+        
+        <div class="content">
+            <form id="add-baby-form" onsubmit="addBaby(event)">
+                <div class="form-group">
+                    <label for="baby-name">Baby's name:</label>
+                    <input type="text" id="baby-name" required placeholder="Enter name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <div class="gender-selection">
+                        <label class="gender-option">
+                            <input type="radio" name="gender" value="boy">
+                            <span class="gender-btn boy">👦 Boy</span>
+                        </label>
+                        <label class="gender-option">
+                            <input type="radio" name="gender" value="girl">
+                            <span class="gender-btn girl">👧 Girl</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="baby-birthdate">Birth date:</label>
+                    <input type="date" id="baby-birthdate" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Add Baby</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Baby page -->
+    <div id="baby-page" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showMainPage()">← Back</button>
+            <h2 id="baby-page-title">Baby</h2>
+        </div>
+        
+        <div class="content">
+            <div class="baby-info">
+                <div class="baby-avatar" id="baby-avatar">👶</div>
+                <div class="baby-details">
+                    <h3 id="baby-name-display">Name</h3>
+                    <p id="baby-age">Age</p>
+                </div>
+            </div>
+            
+            <div class="today-menu">
+                <h3>Today give your baby:</h3>
+                <div class="product-display" id="today-product">
+                    <span class="product-emoji">🍎</span>
+                    <span class="product-name">Apple</span>
+                </div>
+            </div>
+            
+            <div class="menu-actions">
+                <button class="action-btn" onclick="showProductsPage()">
+                    <span class="btn-icon">📝</span>
+                    Manage Products
+                </button>
+                <button class="action-btn" onclick="showWeeklyPlannerPage()">
+                    <span class="btn-icon">📅</span>
+                    Weekly Planner
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products management page -->
+    <div id="products-page" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showBabyPage()">← Back</button>
+            <h2>Feeding Products</h2>
+        </div>
+        
+        <div class="content">
+            <div class="add-product-section">
+                <h3>Add product:</h3>
+                <div class="add-product-form">
+                    <input type="text" id="new-product" placeholder="e.g. apple, banana, carrot">
+                    <select id="product-category" class="category-select">
+                        <option value="fruits">🍎 Fruits</option>
+                        <option value="vegetables">🥕 Vegetables</option>
+                        <option value="grains">🌾 Grains & Cereals</option>
+                        <option value="proteins">🥩 Proteins</option>
+                        <option value="dairy">🥛 Dairy</option>
+                        <option value="other">🍯 Other</option>
+                    </select>
+                    <button onclick="addProduct()" class="add-product-btn">+</button>
+                </div>
+            </div>
+            
+            <div class="products-list" id="products-list">
+                <!-- Products list will be loaded via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Planner page -->
+    <div id="weekly-planner-page" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showBabyPage()">← Back</button>
+            <h2>Weekly Planner</h2>
+        </div>
+        
+        <div class="content">
+            <div class="week-info">
+                <h3 id="current-week">This Week</h3>
+                <p>Plan your baby's meals for the next 7 days</p>
+            </div>
+            
+            <div class="weekly-menu" id="weekly-menu">
+                <!-- Weekly menu will be created via JavaScript -->
+            </div>
+            
+            <div class="planner-actions">
+                <button class="action-btn" onclick="resetToAutomatic()">
+                    <span class="btn-icon">🔄</span>
+                    Reset to Automatic
+                </button>
+                <button class="action-btn" onclick="fillWeekAutomatically()">
+                    <span class="btn-icon">✨</span>
+                    Fill Week Automatically
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal -->
+    <div id="custom-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Confirm Action</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-cancel" class="modal-btn cancel-btn">Cancel</button>
+                <button id="modal-confirm" class="modal-btn confirm-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert -->
+    <div id="custom-alert" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="alert-title">Notification</h3>
+            </div>
+            <div class="modal-body">
+                <p id="alert-message">Message</p>
+            </div>
+            <div class="modal-footer">
+                <button id="alert-ok" class="modal-btn confirm-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Prompt -->
+    <div id="custom-prompt" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="prompt-title">Enter Value</h3>
+            </div>
+            <div class="modal-body">
+                <p id="prompt-message">Please enter a value:</p>
+                <input type="text" id="prompt-input" placeholder="Enter value...">
+            </div>
+            <div class="modal-footer">
+                <button id="prompt-cancel" class="modal-btn cancel-btn">Cancel</button>
+                <button id="prompt-confirm" class="modal-btn confirm-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator && (location.protocol === 'http:' || location.protocol === 'https:')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
