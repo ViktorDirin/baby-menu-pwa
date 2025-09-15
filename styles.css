@@ -187,12 +187,21 @@ body::before {
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 15px;
-    cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 15px;
     border: 3px solid transparent;
+    position: relative;
+}
+
+.child-main {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    gap: 15px;
 }
 
 .child-card:hover {
@@ -244,6 +253,36 @@ body::before {
     opacity: 0.9;
     font-size: 0.9rem;
     font-weight: 500;
+}
+
+/* Кнопка удаления ребенка */
+.remove-baby-btn {
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1.2rem;
+    color: #dc2626;
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.remove-baby-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #dc2626;
+    transform: scale(1.05);
+    color: #b91c1c;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.remove-baby-btn:active {
+    transform: scale(0.95);
 }
 
 /* Кнопки */

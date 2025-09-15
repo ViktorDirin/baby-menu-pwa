@@ -274,12 +274,17 @@ function updateChildrenList() {
     }
     
     childrenList.innerHTML = data.children.map(child => `
-        <div class="child-card ${child.gender}-card" onclick="selectBaby(${child.id})">
-            <div class="child-avatar ${child.gender}-avatar">${child.gender === 'boy' ? '👦' : '👧'}</div>
-            <div class="child-info">
-                <h3>${child.name}</h3>
-                <p>Age: ${calculateAge(child.birthDate)}</p>
+        <div class="child-card ${child.gender}-card">
+            <div class="child-main" onclick="selectBaby(${child.id})">
+                <div class="child-avatar ${child.gender}-avatar">${child.gender === 'boy' ? '👦' : '👧'}</div>
+                <div class="child-info">
+                    <h3>${child.name}</h3>
+                    <p>Age: ${calculateAge(child.birthDate)}</p>
+                </div>
             </div>
+            <button class="remove-baby-btn" onclick="event.stopPropagation(); removeBaby(${child.id})" title="Remove Baby">
+                🗑️
+            </button>
         </div>
     `).join('');
 }
@@ -291,6 +296,73 @@ function selectBaby(babyId) {
         saveCurrentBaby(babyId); // Сохраняем выбранного ребенка
         showBabyPage();
     }
+}
+
+function removeBaby(babyId) {
+    const data = getData();
+    const baby = data.children.find(child => child.id === babyId);
+    
+    if (!baby) return;
+    
+    // Показываем модальное окно с предупреждением
+    showModal(
+        'Remove Baby',
+        `Are you sure you want to remove "${baby.name}"?\n\nThis will permanently delete:\n• All products\n• Weekly meal plans\n• All feeding history\n\nThis action cannot be undone!`,
+        () => {
+            // Подтверждение удаления
+            continueRemoveBaby(babyId);
+        },
+        () => {
+            // Отмена удаления
+            console.log('Baby removal cancelled');
+        }
+    );
+}
+
+function continueRemoveBaby(babyId) {
+    const data = getData();
+    const babyIndex = data.children.findIndex(child => child.id === babyId);
+    
+    if (babyIndex === -1) return;
+    
+    const baby = data.children[babyIndex];
+    
+    // Удаляем ребенка из списка
+    data.children.splice(babyIndex, 1);
+    
+    // Удаляем все связанные данные
+    delete data.products[babyId];
+    delete data.productCategories[babyId];
+    delete data.menus[babyId];
+    delete data.weeklyPlans[babyId];
+    
+    // Если удаляемый ребенок был текущим, сбрасываем currentBaby
+    if (currentBaby && currentBaby.id === babyId) {
+        currentBaby = null;
+        data.currentBabyId = null;
+        
+        // Если есть другие дети, выбираем первого
+        if (data.children.length > 0) {
+            currentBaby = data.children[0];
+            data.currentBabyId = currentBaby.id;
+        }
+    }
+    
+    // Сохраняем изменения
+    saveData(data);
+    
+    // Обновляем интерфейс
+    updateChildrenList();
+    
+    // Если удалили текущего ребенка, показываем главную страницу
+    if (!currentBaby) {
+        showMainPage();
+    } else {
+        // Если есть другие дети, показываем страницу выбранного ребенка
+        showBabyPage();
+    }
+    
+    showAlert('Baby Removed', `"${baby.name}" has been successfully removed from the planner.`);
 }
 
 function calculateAge(birthDate) {
