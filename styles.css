@@ -285,12 +285,36 @@ body::before {
     transform: scale(0.95);
 }
 
+/* Main actions container */
+.main-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
 /* Кнопки */
 .add-baby-btn, .submit-btn, .action-btn {
-    width: 100%;
+    flex: 1;
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     border: none;
     color: #1e3a8a;
+    padding: 15px 20px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.settings-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border: none;
+    color: #3b82f6;
     padding: 15px 20px;
     border-radius: 15px;
     font-size: 1.1rem;
@@ -310,6 +334,103 @@ body::before {
 
 .btn-icon {
     font-size: 1.2rem;
+}
+
+/* Settings page styles */
+.settings-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.settings-section h3 {
+    color: #1e3a8a;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.settings-info h4 {
+    color: #374151;
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.settings-info p {
+    color: #6b7280;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.update-app-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.update-app-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.update-app-btn:active {
+    transform: translateY(0);
+}
+
+.app-info {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    color: #6b7280;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #1e3a8a;
+    font-weight: 600;
+    font-size: 0.9rem;
 }
 
 /* Формы */

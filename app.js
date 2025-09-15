@@ -109,6 +109,11 @@ function showWeeklyPlannerPage() {
     updateWeeklyPlanner();
 }
 
+function showSettingsPage() {
+    showPage('settings-page');
+    updateLastUpdatedTime();
+}
+
 // Категории продуктов
 const PRODUCT_CATEGORIES = {
     'fruits': {
@@ -1376,3 +1381,67 @@ window.addEventListener('appinstalled', (evt) => {
     console.log('PWA was installed');
     showAlert('App Installed!', 'Baby Menu has been installed on your device!');
 });
+
+// Settings page functions
+function updateLastUpdatedTime() {
+    const lastUpdatedElement = document.getElementById('last-updated');
+    if (lastUpdatedElement) {
+        const now = new Date();
+        const timeString = now.toLocaleString();
+        lastUpdatedElement.textContent = timeString;
+    }
+}
+
+// Force update app function
+async function forceUpdateApp() {
+    try {
+        // Show loading state
+        const updateBtn = document.querySelector('.update-app-btn');
+        const originalText = updateBtn.innerHTML;
+        updateBtn.innerHTML = '<span class="btn-icon">⏳</span> Updating...';
+        updateBtn.disabled = true;
+        
+        // Check if service worker is supported
+        if ('serviceWorker' in navigator) {
+            // Get all service worker registrations
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            
+            // Unregister all service workers
+            for (let registration of registrations) {
+                await registration.unregister();
+                console.log('Service Worker unregistered:', registration);
+            }
+            
+            // Clear all caches
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(
+                    cacheNames.map(cacheName => caches.delete(cacheName))
+                );
+                console.log('All caches cleared');
+            }
+            
+            // Wait a moment for cleanup
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Re-register service worker
+            const registration = await navigator.serviceWorker.register('./sw.js');
+            console.log('Service Worker re-registered:', registration);
+            
+            // Force reload the page
+            window.location.reload(true);
+        } else {
+            // Fallback: just reload the page
+            window.location.reload(true);
+        }
+    } catch (error) {
+        console.error('Error updating app:', error);
+        
+        // Reset button state
+        const updateBtn = document.querySelector('.update-app-btn');
+        updateBtn.innerHTML = '<span class="btn-icon">🔄</span> Update App';
+        updateBtn.disabled = false;
+        
+        showAlert('Update Failed', 'Failed to update the app. Please try refreshing the page manually.');
+    }
+}
