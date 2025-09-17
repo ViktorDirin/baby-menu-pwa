@@ -74,6 +74,10 @@
                     <span class="btn-icon">👶</span>
                     Add Baby
                 </button>
+                <button class="stats-btn" onclick="showStatisticsPage()">
+                    <span class="btn-icon">📊</span>
+                    Statistics
+                </button>
                 <button class="settings-btn" onclick="showSettingsPage()">
                     <span class="btn-icon">⚙️</span>
                     Settings
@@ -85,7 +89,11 @@
     <!-- Add baby page -->
     <div id="add-baby-page" class="page">
         <div class="header">
-            <button class="back-btn" onclick="showMainPage()">← Back</button>
+            <button class="back-btn" onclick="showMainPage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h2>Add Baby</h2>
         </div>
         
@@ -123,7 +131,11 @@
     <!-- Baby page -->
     <div id="baby-page" class="page">
         <div class="header">
-            <button class="back-btn" onclick="showMainPage()">← Back</button>
+            <button class="back-btn" onclick="showMainPage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h2 id="baby-page-title">Baby</h2>
         </div>
         
@@ -142,6 +154,10 @@
                     <span class="product-emoji">🍎</span>
                     <span class="product-name">Apple</span>
                 </div>
+                <button class="fed-btn" onclick="markAsFed()">
+                    <span class="btn-icon">☐</span>
+                    Mark as Fed
+                </button>
             </div>
             
             <div class="menu-actions">
@@ -160,7 +176,11 @@
     <!-- Products management page -->
     <div id="products-page" class="page">
         <div class="header">
-            <button class="back-btn" onclick="showBabyPage()">← Back</button>
+            <button class="back-btn" onclick="showBabyPage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h2>Feeding Products</h2>
         </div>
         
@@ -199,14 +219,30 @@
     <!-- Weekly Planner page -->
     <div id="weekly-planner-page" class="page">
         <div class="header">
-            <button class="back-btn" onclick="showBabyPage()">← Back</button>
+            <button class="back-btn" onclick="showBabyPage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h2>Weekly Planner</h2>
         </div>
         
         <div class="content">
             <div class="week-info">
-                <h3 id="current-week">This Week</h3>
-                <p>Plan your baby's meals for the next 7 days</p>
+                <div class="week-navigation">
+                    <button class="week-nav-btn" onclick="changeWeek(-1)" id="prev-week-btn">
+                        <span class="btn-icon">←</span>
+                        Previous
+                    </button>
+                    <div class="week-title">
+                        <h3 id="current-week">This Week</h3>
+                        <p id="week-dates">Plan your baby's meals for the next 7 days</p>
+                    </div>
+                    <button class="week-nav-btn" onclick="changeWeek(1)" id="next-week-btn">
+                        Next
+                        <span class="btn-icon">→</span>
+                    </button>
+                </div>
             </div>
             
             <div class="weekly-menu" id="weekly-menu">
@@ -277,7 +313,11 @@
     <!-- Settings page -->
     <div id="settings-page" class="page">
         <div class="header">
-            <button class="back-btn" onclick="showMainPage()">← Back</button>
+            <button class="back-btn" onclick="showMainPage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <h2>Settings</h2>
         </div>
         
@@ -312,7 +352,145 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Statistics Page -->
+    <div id="statistics-page" class="page">
+        <div class="header">
+            <button class="back-btn" onclick="showMainPage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <h2>Statistics</h2>
+        </div>
+        <div class="content">
+            <div class="stats-container">
+                <!-- Вкладки с детьми -->
+                <div class="children-tabs" id="children-tabs">
+                    <!-- Вкладки детей будут загружены через JavaScript -->
+                </div>
+                
+                <div class="stats-tabs">
+                    <button class="stats-tab active" onclick="showStatsTab('overview')">Overview</button>
+                    <button class="stats-tab" onclick="showStatsTab('weekly')">Weekly</button>
+                    <button class="stats-tab" onclick="showStatsTab('monthly')">Monthly</button>
+                    <button class="stats-tab" onclick="showStatsTab('products')">Products</button>
+                </div>
+                
+                <div class="stats-actions">
+                    <button class="reset-stats-btn" onclick="resetStatistics()">
+                        <span class="btn-icon">🗑️</span>
+                        Reset Current
+                    </button>
+                    <button class="reset-all-stats-btn" onclick="resetAllStatistics()">
+                        <span class="btn-icon">⚠️</span>
+                        Reset All
+                    </button>
+                </div>
+                
+                <div id="stats-overview" class="stats-content active">
+                    <div class="stats-header">
+                        <h3 id="stats-baby-name">Statistics for: Loading...</h3>
+                    </div>
+                    <div class="stats-cards">
+                        <div class="stats-card">
+                            <div class="stats-icon">📊</div>
+                            <div class="stats-info">
+                                <h3 id="total-feedings">0</h3>
+                                <p>Total Feedings</p>
+                            </div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-icon">📅</div>
+                            <div class="stats-info">
+                                <h3 id="days-tracked">0</h3>
+                                <p>Days Tracked</p>
+                            </div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-icon">🍎</div>
+                            <div class="stats-info">
+                                <h3 id="unique-products">0</h3>
+                                <p>Unique Products</p>
+                            </div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-icon">📈</div>
+                            <div class="stats-info">
+                                <h3 id="avg-per-day">0</h3>
+                                <p>Avg per Day</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="stats-weekly" class="stats-content">
+                    <div class="stats-chart">
+                        <h3>Weekly Feeding Chart</h3>
+                        <div id="weekly-chart" class="chart-container"></div>
+                    </div>
+                </div>
+                
+                <div id="stats-monthly" class="stats-content">
+                    <div class="stats-chart">
+                        <h3>Monthly Feeding Chart</h3>
+                        <div id="monthly-chart" class="chart-container"></div>
+                    </div>
+                </div>
+                
+                <div id="stats-products" class="stats-content">
+                    <div class="stats-chart">
+                        <h3>Most Used Products</h3>
+                        <div id="products-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=3"></script>
+    <script>
+        // Проверка загрузки
+        console.log('HTML loaded');
+        
+        // Проверяем через небольшую задержку
+        setTimeout(function() {
+            console.log('Functions available:', {
+                showAddBabyPage: typeof showAddBabyPage,
+                showStatisticsPage: typeof showStatisticsPage,
+                showSettingsPage: typeof showSettingsPage,
+                showPage: typeof showPage
+            });
+            
+            // Тестируем кнопки
+            const addBabyBtn = document.querySelector('.add-baby-btn');
+            const statsBtn = document.querySelector('.stats-btn');
+            const settingsBtn = document.querySelector('.settings-btn');
+            
+            console.log('Buttons found:', {
+                addBabyBtn: !!addBabyBtn,
+                statsBtn: !!statsBtn,
+                settingsBtn: !!settingsBtn
+            });
+            
+            if (addBabyBtn) {
+                addBabyBtn.addEventListener('click', function() {
+                    console.log('Add Baby button clicked');
+                });
+            }
+            
+            if (statsBtn) {
+                statsBtn.addEventListener('click', function() {
+                    console.log('Statistics button clicked');
+                });
+            }
+            
+            if (settingsBtn) {
+                settingsBtn.addEventListener('click', function() {
+                    console.log('Settings button clicked');
+                });
+            }
+        }, 100);
+    </script>
     
     <!-- PWA Service Worker Registration -->
     <script>

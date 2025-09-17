@@ -3,10 +3,22 @@ let currentBaby = null;
 let todayProduct = null; // Глобальная переменная для хранения продукта сегодняшнего дня
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
+let currentWeekOffset = 0; // Для навигации по неделям в планировщике
+let selectedStatsBaby = null; // Выбранный ребенок для статистики
 
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
-    loadData();
+    console.log('DOM Content Loaded');
+    
+    // Загружаем данные и инициализируем структуру
+    const data = loadData();
+    if (!data.feedingHistory) {
+        data.feedingHistory = {};
+        saveData(data);
+    }
+    
+    // Восстанавливаем текущего ребенка
+    restoreCurrentBaby();
     
     // Всегда показываем главную страницу при загрузке
     showMainPage();
@@ -14,6 +26,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Инициализация мобильных функций
     initMobileFeatures();
+    
+    // Обработчик изменения размера окна для перестройки графиков
+    window.addEventListener('resize', function() {
+        if (document.getElementById('statistics-page').classList.contains('active')) {
+            updateStatistics();
+        }
+    });
+    
+    console.log('App initialized');
 });
 
 // Мобильные функции
@@ -35,6 +56,21 @@ function initMobileFeatures() {
         }
     });
     
+    // Обработка кнопки "Назад" Android
+    window.addEventListener('popstate', function(event) {
+        event.preventDefault();
+        goBack();
+    });
+    
+    // Добавляем состояние в историю для каждой страницы
+    window.addEventListener('beforeunload', function() {
+        // Сохраняем текущую страницу в истории
+        const currentPage = document.querySelector('.page.active');
+        if (currentPage) {
+            history.pushState({page: currentPage.id}, '', window.location.href);
+        }
+    });
+    
     // Обработка URL параметров для быстрого доступа
     const urlParams = new URLSearchParams(window.location.search);
     const action = urlParams.get('action');
@@ -47,13 +83,26 @@ function initMobileFeatures() {
 
 // Управление страницами
 function showPage(pageId) {
+    console.log('showPage called with:', pageId);
+    
     // Скрыть все страницы
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
     });
     
     // Показать нужную страницу
-    document.getElementById(pageId).classList.add('active');
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+        console.log('Page shown:', pageId);
+    } else {
+        console.error('Page not found:', pageId);
+    }
+    
+    // Добавляем состояние в историю браузера для навигации назад
+    if (pageId !== 'main-page') {
+        history.pushState({page: pageId}, '', window.location.href);
+    }
 }
 
 // Улучшенная навигация назад
@@ -84,6 +133,7 @@ function showMainPage() {
 }
 
 function showAddBabyPage() {
+    console.log('showAddBabyPage called');
     showPage('add-baby-page');
     // Очистить форму
     document.getElementById('add-baby-form').reset();
@@ -98,18 +148,17 @@ function showBabyPage() {
 function showProductsPage() {
     if (!currentBaby) return;
     showPage('products-page');
-    updateProductsList();
-    updatePopularProducts();
-    initProductAutocomplete();
+    // Небольшая задержка для корректного обновления DOM
+    setTimeout(() => {
+        updateProductsList();
+        updatePopularProducts();
+        initProductAutocomplete();
+    }, 100);
 }
 
-function showWeeklyPlannerPage() {
-    if (!currentBaby) return;
-    showPage('weekly-planner-page');
-    updateWeeklyPlanner();
-}
 
 function showSettingsPage() {
+    console.log('showSettingsPage called');
     showPage('settings-page');
     updateLastUpdatedTime();
 }
@@ -198,7 +247,8 @@ function loadData() {
         productCategories: {}, // Новое поле для категорий продуктов
         menus: {},
         weeklyPlans: {}, // Хранит ручные изменения для каждого ребенка
-        currentBabyId: null // ID текущего выбранного ребенка
+        currentBabyId: null, // ID текущего выбранного ребенка
+        feedingHistory: {} // История кормлений для статистики
     };
 }
 
@@ -397,6 +447,9 @@ function updateBabyPage() {
     
     updateWeeklyPlanner(); // Сначала обновляем планировщик, чтобы сохранить todayProduct
     updateTodayProduct(); // Потом обновляем страницу ребенка
+    
+    // Сбрасываем кнопку "Mark as Fed"
+    resetFedButton();
 }
 
 function applyGenderTheme(gender) {
@@ -579,6 +632,9 @@ function addProduct() {
     input.value = '';
     updateProductsList();
     updateTodayProduct();
+    
+    // Сбрасываем кнопку "Mark as Fed" при добавлении продукта
+    resetFedButton();
     
     // Скрываем предложения после добавления
     const suggestionsContainer = document.getElementById('product-suggestions');
@@ -863,6 +919,9 @@ function selectPopularProduct(productName) {
     }
 }
 
+// Глобальная переменная для отслеживания текущей недели
+// currentWeekOffset уже объявлена в начале файла
+
 // Планировщик на неделю
 function updateWeeklyPlanner() {
     if (!currentBaby) return;
@@ -871,18 +930,20 @@ function updateWeeklyPlanner() {
     const products = data.products[currentBaby.id] || [];
     const weeklyPlan = data.weeklyPlans[currentBaby.id] || {};
     
-    // Обновляем информацию о неделе
+    // Вычисляем даты для выбранной недели
     const today = new Date();
-    const weekStart = getWeekStart(today);
+    const baseWeekStart = getWeekStart(today);
+    const weekStart = new Date(baseWeekStart);
+    weekStart.setDate(baseWeekStart.getDate() + (currentWeekOffset * 7));
+    
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
     
+    // Обновляем информацию о неделе
+    updateWeekInfo(weekStart, weekEnd);
     
-    const currentWeekElement = document.getElementById('current-week');
-    if (currentWeekElement) {
-        currentWeekElement.textContent = 
-            `Week of ${formatDateShort(weekStart)} - ${formatDateShort(weekEnd)}`;
-    }
+    // Обновляем кнопки навигации
+    updateWeekNavigation();
     
     // Создаем карточки дней
     const weeklyMenu = document.getElementById('weekly-menu');
@@ -947,6 +1008,58 @@ function updateWeeklyPlanner() {
     weeklyMenu.innerHTML = weeklyHTML;
 }
 
+// Обновление информации о неделе
+function updateWeekInfo(weekStart, weekEnd) {
+    const currentWeekElement = document.getElementById('current-week');
+    const weekDatesElement = document.getElementById('week-dates');
+    
+    if (currentWeekElement) {
+        if (currentWeekOffset === 0) {
+            currentWeekElement.textContent = 'This Week';
+        } else if (currentWeekOffset === 1) {
+            currentWeekElement.textContent = 'Next Week';
+        } else if (currentWeekOffset === -1) {
+            currentWeekElement.textContent = 'Previous Week';
+        } else {
+            currentWeekElement.textContent = `Week of ${formatDateShort(weekStart)}`;
+        }
+    }
+    
+    if (weekDatesElement) {
+        weekDatesElement.textContent = `${formatDateShort(weekStart)} - ${formatDateShort(weekEnd)}`;
+    }
+}
+
+// Обновление кнопок навигации
+function updateWeekNavigation() {
+    const prevBtn = document.getElementById('prev-week-btn');
+    const nextBtn = document.getElementById('next-week-btn');
+    
+    if (prevBtn) {
+        // Можно ограничить количество предыдущих недель
+        prevBtn.disabled = currentWeekOffset <= -4; // Максимум 4 недели назад
+    }
+    
+    if (nextBtn) {
+        // Можно ограничить количество следующих недель
+        nextBtn.disabled = currentWeekOffset >= 4; // Максимум 4 недели вперед
+    }
+}
+
+// Функция смены недели
+function changeWeek(direction) {
+    currentWeekOffset += direction;
+    updateWeeklyPlanner();
+}
+
+// Сброс к текущей неделе при открытии планировщика
+function showWeeklyPlannerPage() {
+    if (!currentBaby) return;
+    currentWeekOffset = 0; // Сбрасываем к текущей неделе
+    showPage('weekly-planner-page');
+    updateWeeklyPlanner();
+}
+
 function getWeekStart(date) {
     const day = date.getDay();
     // Находим воскресенье текущей недели (американская система)
@@ -1004,6 +1117,9 @@ function editDayProduct(dateString) {
                     saveData(data);
                     updateWeeklyPlanner();
                     updateTodayProduct(); // Обновляем "Today give"
+                    
+                    // Сбрасываем кнопку "Mark as Fed" при изменении продукта
+                    resetFedButton();
                 }
                 return;
             }
@@ -1021,6 +1137,9 @@ function editDayProduct(dateString) {
                 saveData(data);
                 updateWeeklyPlanner();
                 updateTodayProduct(); // Обновляем "Today give"
+                
+                // Сбрасываем кнопку "Mark as Fed" при изменении продукта
+                resetFedButton();
             } else {
                 showAlert('Invalid Choice', 'Please enter a valid number!');
             }
@@ -1032,6 +1151,9 @@ function editDayProduct(dateString) {
                 saveData(data);
                 updateWeeklyPlanner();
                 updateTodayProduct(); // Обновляем "Today give"
+                
+                // Сбрасываем кнопку "Mark as Fed" при отмене изменения продукта
+                resetFedButton();
             }
         }
     );
@@ -1063,6 +1185,10 @@ function continueResetToAutomatic() {
     saveData(data);
     updateWeeklyPlanner();
     updateTodayProduct(); // Обновляем "Today give"
+    
+    // Сбрасываем кнопку "Mark as Fed" при сбросе планировщика
+    resetFedButton();
+    
     showAlert('Success!', 'Reset to automatic planning!');
 }
 
@@ -1088,6 +1214,10 @@ function fillWeekAutomatically() {
     saveData(data);
     updateWeeklyPlanner();
     updateTodayProduct(); // Обновляем "Today give"
+    
+    // Сбрасываем кнопку "Mark as Fed" при автоматическом заполнении
+    resetFedButton();
+    
     showAlert('Success!', 'Week filled automatically!');
 }
 
@@ -1443,5 +1573,376 @@ async function forceUpdateApp() {
         updateBtn.disabled = false;
         
         showAlert('Update Failed', 'Failed to update the app. Please try refreshing the page manually.');
+    }
+}
+
+// ==================== СТАТИСТИКА ====================
+
+// Показать страницу статистики
+function showStatisticsPage() {
+    console.log('showStatisticsPage called');
+    const data = getData();
+    if (data.children.length === 0) {
+        showAlert('No Babies Added', 'Please add a baby first to view statistics');
+        return;
+    }
+    
+    showPage('statistics-page');
+    
+    // Инициализируем выбранного ребенка для статистики
+    if (!selectedStatsBaby) {
+        selectedStatsBaby = data.children[0];
+    }
+    
+    // Обновляем вкладки детей и статистику
+    updateChildrenTabs();
+    updateStatistics();
+}
+
+// Обновить вкладки детей
+function updateChildrenTabs() {
+    const data = getData();
+    const childrenTabsContainer = document.getElementById('children-tabs');
+    
+    if (data.children.length === 0) {
+        childrenTabsContainer.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 20px;">No children added yet</p>';
+        return;
+    }
+    
+    childrenTabsContainer.innerHTML = data.children.map(child => `
+        <button class="child-tab ${selectedStatsBaby && selectedStatsBaby.id === child.id ? 'active' : ''}" 
+                onclick="selectStatsBaby(${child.id})">
+            <span class="child-tab-avatar">${child.gender === 'boy' ? '👦' : '👧'}</span>
+            <span>${child.name}</span>
+        </button>
+    `).join('');
+}
+
+// Выбрать ребенка для статистики
+function selectStatsBaby(babyId) {
+    const data = getData();
+    selectedStatsBaby = data.children.find(child => child.id === babyId);
+    
+    if (selectedStatsBaby) {
+        // Обновляем активную вкладку
+        document.querySelectorAll('.child-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector(`[onclick="selectStatsBaby(${babyId})"]`).classList.add('active');
+        
+        // Обновляем статистику
+        updateStatistics();
+    }
+}
+
+// Обновить статистику
+function updateStatistics() {
+    if (!selectedStatsBaby) return;
+    
+    const data = getData();
+    const feedingHistory = data.feedingHistory[selectedStatsBaby.id] || {};
+    
+    // Обновляем заголовок
+    const statsBabyName = document.getElementById('stats-baby-name');
+    if (statsBabyName) {
+        statsBabyName.textContent = `Statistics for: ${selectedStatsBaby.name}`;
+    }
+    
+    // Обновляем общую статистику
+    updateOverviewStats(feedingHistory);
+    
+    // Обновляем графики
+    updateWeeklyChart(feedingHistory);
+    updateMonthlyChart(feedingHistory);
+    updateProductsChart(feedingHistory);
+}
+
+// Обновить общую статистику
+function updateOverviewStats(feedingHistory) {
+    const totalFeedings = Object.values(feedingHistory).reduce((sum, day) => sum + (day.feedings || 0), 0);
+    const daysTracked = Object.keys(feedingHistory).length;
+    const uniqueProducts = new Set();
+    
+    Object.values(feedingHistory).forEach(day => {
+        if (day.products) {
+            day.products.forEach(product => uniqueProducts.add(product));
+        }
+    });
+    
+    const avgPerDay = daysTracked > 0 ? (totalFeedings / daysTracked).toFixed(1) : 0;
+    
+    document.getElementById('total-feedings').textContent = totalFeedings;
+    document.getElementById('days-tracked').textContent = daysTracked;
+    document.getElementById('unique-products').textContent = uniqueProducts.size;
+    document.getElementById('avg-per-day').textContent = avgPerDay;
+}
+
+// Обновить недельный график
+function updateWeeklyChart(feedingHistory) {
+    const chartContainer = document.getElementById('weekly-chart');
+    const last7Days = getLast7Days();
+    
+    let chartHTML = '<div class="weekly-bars">';
+    last7Days.forEach(day => {
+        const dayData = feedingHistory[day] || { feedings: 0 };
+        const height = Math.max(20, (dayData.feedings / 3) * 100); // Максимум 3 кормления в день
+        chartHTML += `
+            <div class="bar-container">
+                <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #3b82f6, #1d4ed8);"></div>
+                <div class="bar-label">${new Date(day).toLocaleDateString('en', { weekday: 'short' })}</div>
+                <div class="bar-value">${dayData.feedings || 0}</div>
+            </div>
+        `;
+    });
+    chartHTML += '</div>';
+    
+    chartContainer.innerHTML = chartHTML;
+}
+
+// Обновить месячный график
+function updateMonthlyChart(feedingHistory) {
+    const chartContainer = document.getElementById('monthly-chart');
+    const last30Days = getLast30Days();
+    
+    // Определяем количество колонок в зависимости от размера экрана
+    const isMobile = window.innerWidth <= 360;
+    const colsPerRow = isMobile ? 8 : 10;
+    const rows = isMobile ? 4 : 3;
+    
+    let chartHTML = '<div class="monthly-bars">';
+    
+    // Заполняем сетку по строкам
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < colsPerRow; col++) {
+            const dayIndex = row * colsPerRow + col;
+            if (dayIndex < last30Days.length) {
+                const day = last30Days[dayIndex];
+                const dayData = feedingHistory[day] || { feedings: 0 };
+                const height = Math.max(10, (dayData.feedings / 3) * 50);
+                chartHTML += `
+                    <div class="bar-container">
+                        <div class="bar" style="height: ${height}px; background: linear-gradient(135deg, #10b981, #059669);"></div>
+                        <div class="bar-label">${new Date(day).getDate()}</div>
+                    </div>
+                `;
+            } else {
+                // Пустая ячейка для выравнивания
+                chartHTML += '<div class="bar-container"></div>';
+            }
+        }
+    }
+    
+    chartHTML += '</div>';
+    
+    chartContainer.innerHTML = chartHTML;
+}
+
+// Обновить график продуктов
+function updateProductsChart(feedingHistory) {
+    const chartContainer = document.getElementById('products-chart');
+    const productCounts = {};
+    
+    Object.values(feedingHistory).forEach(day => {
+        if (day.products) {
+            day.products.forEach(product => {
+                productCounts[product] = (productCounts[product] || 0) + 1;
+            });
+        }
+    });
+    
+    const sortedProducts = Object.entries(productCounts)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 10);
+    
+    if (sortedProducts.length === 0) {
+        chartContainer.innerHTML = '<p>No feeding data available</p>';
+        return;
+    }
+    
+    let chartHTML = '<div class="products-list">';
+    sortedProducts.forEach(([product, count]) => {
+        const percentage = (count / Math.max(...Object.values(productCounts))) * 100;
+        chartHTML += `
+            <div class="product-item">
+                <div class="product-name">${product}</div>
+                <div class="product-bar">
+                    <div class="product-fill" style="width: ${percentage}%; background: linear-gradient(135deg, #fbbf24, #f59e0b);"></div>
+                </div>
+                <div class="product-count">${count}</div>
+            </div>
+        `;
+    });
+    chartHTML += '</div>';
+    
+    chartContainer.innerHTML = chartHTML;
+}
+
+// Переключение вкладок статистики
+function showStatsTab(tabName) {
+    // Убираем активный класс со всех вкладок и контента
+    document.querySelectorAll('.stats-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.stats-content').forEach(content => content.classList.remove('active'));
+    
+    // Добавляем активный класс к выбранной вкладке и контенту
+    document.querySelector(`[onclick="showStatsTab('${tabName}')"]`).classList.add('active');
+    document.getElementById(`stats-${tabName}`).classList.add('active');
+}
+
+// Сброс статистики
+function resetStatistics() {
+    if (!selectedStatsBaby) {
+        showAlert('No Baby Selected', 'Please select a baby first');
+        return;
+    }
+    
+    showModal(
+        'Reset Statistics',
+        `Are you sure you want to reset all feeding statistics for "${selectedStatsBaby.name}"?\n\nThis will permanently delete:\n• All feeding history\n• Daily feeding records\n• Product usage statistics\n\nThis action cannot be undone!`,
+        () => {
+            // Подтверждение сброса
+            continueResetStatistics();
+        },
+        () => {
+            // Отмена
+        }
+    );
+}
+
+// Продолжить сброс статистики
+function continueResetStatistics() {
+    if (!selectedStatsBaby) return;
+    
+    const data = getData();
+    
+    // Удаляем всю историю кормлений для выбранного ребенка
+    if (data.feedingHistory && data.feedingHistory[selectedStatsBaby.id]) {
+        delete data.feedingHistory[selectedStatsBaby.id];
+    }
+    
+    saveData(data);
+    
+    // Обновляем статистику
+    updateStatistics();
+    
+    showAlert('Success!', `Statistics for ${selectedStatsBaby.name} have been reset`);
+}
+
+// Сброс всей статистики
+function resetAllStatistics() {
+    const data = getData();
+    
+    if (data.children.length === 0) {
+        showAlert('No Babies', 'No babies added yet');
+        return;
+    }
+    
+    const childrenNames = data.children.map(child => child.name).join(', ');
+    
+    showModal(
+        'Reset All Statistics',
+        `Are you sure you want to reset ALL feeding statistics?\n\nThis will permanently delete statistics for:\n${childrenNames}\n\n• All feeding history\n• Daily feeding records\n• Product usage statistics\n\nThis action cannot be undone!`,
+        () => {
+            // Подтверждение сброса
+            continueResetAllStatistics();
+        },
+        () => {
+            // Отмена
+        }
+    );
+}
+
+// Продолжить сброс всей статистики
+function continueResetAllStatistics() {
+    const data = getData();
+    
+    // Удаляем всю историю кормлений
+    data.feedingHistory = {};
+    
+    saveData(data);
+    
+    // Обновляем статистику
+    updateStatistics();
+    
+    showAlert('Success!', 'All statistics have been reset');
+}
+
+// Записать кормление в историю
+function recordFeeding(babyId, productName) {
+    const data = getData();
+    if (!data.feedingHistory[babyId]) {
+        data.feedingHistory[babyId] = {};
+    }
+    
+    const today = new Date().toISOString().split('T')[0];
+    if (!data.feedingHistory[babyId][today]) {
+        data.feedingHistory[babyId][today] = {
+            feedings: 0,
+            products: []
+        };
+    }
+    
+    data.feedingHistory[babyId][today].feedings++;
+    data.feedingHistory[babyId][today].products.push(productName);
+    
+    saveData(data);
+}
+
+// Получить последние 7 дней
+function getLast7Days() {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        days.push(date.toISOString().split('T')[0]);
+    }
+    return days;
+}
+
+// Получить последние 30 дней
+function getLast30Days() {
+    const days = [];
+    for (let i = 29; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        days.push(date.toISOString().split('T')[0]);
+    }
+    return days;
+}
+
+// Сбросить кнопку "Mark as Fed"
+function resetFedButton() {
+    const fedBtn = document.querySelector('.fed-btn');
+    if (fedBtn) {
+        fedBtn.innerHTML = '<span class="btn-icon">☐</span> Mark as Fed';
+        fedBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        fedBtn.disabled = false;
+    }
+}
+
+// Отметить как покормленного
+function markAsFed() {
+    if (!currentBaby) return;
+    
+    const productName = todayProduct;
+    if (!productName) {
+        showAlert('No Product', 'No product selected for today');
+        return;
+    }
+    
+    // Записываем кормление в историю
+    recordFeeding(currentBaby.id, productName);
+    
+    // Меняем кнопку на "отмечено"
+    const fedBtn = document.querySelector('.fed-btn');
+    if (fedBtn) {
+        fedBtn.innerHTML = '<span class="btn-icon">☑</span> Fed Today';
+        fedBtn.style.background = 'linear-gradient(135deg, #6b7280, #4b5563)';
+        fedBtn.disabled = true;
+    }
+    
+    // Показываем подтверждение
+    showAlert('Success!', `Marked ${productName} as fed for ${currentBaby.name}`);
+    
+    // Обновляем статистику если открыта страница статистики
+    if (document.getElementById('statistics-page').classList.contains('active')) {
+        updateStatistics();
     }
 }
