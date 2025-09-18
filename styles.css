@@ -11,6 +11,7 @@ body {
     min-height: 100vh;
     color: #1e3a8a;
     overflow-x: hidden;
+    overflow-y: auto;
     /* Улучшения для мобильных устройств */
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
@@ -44,6 +45,7 @@ body::before {
     padding: 20px;
     max-width: 500px;
     margin: 0 auto;
+    overflow-y: auto;
 }
 
 .page.active {
@@ -1386,7 +1388,8 @@ body::before {
     
     /* Список продуктов */
     .products-list {
-        max-height: 300px;
+        /* Убираем ограничение по высоте для возможности прокрутки */
+        /* max-height: 300px; */
         margin-bottom: 20px;
     }
     
