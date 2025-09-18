@@ -847,7 +847,8 @@ function initProductAutocomplete() {
         if (e.target.classList.contains('suggestion-item')) {
             productInput.value = e.target.textContent;
             suggestionsContainer.classList.remove('show');
-            productInput.focus();
+            // Убираем focus() чтобы не появлялась клавиатура при выборе из предложений
+            // productInput.focus();
         }
     });
     
@@ -905,7 +906,8 @@ function selectPopularProduct(productName) {
     
     if (productInput) {
         productInput.value = productName;
-        productInput.focus();
+        // Убираем focus() чтобы не появлялась клавиатура при выборе из списка
+        // productInput.focus();
     }
     
     // Убираем выделение с других элементов
