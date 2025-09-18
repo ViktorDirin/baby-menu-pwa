@@ -591,6 +591,10 @@ function addProduct() {
     const babyAge = calculateBabyAge(currentBaby.birthDate);
     const categoryInfo = PRODUCT_CATEGORIES[category];
     
+    console.log('Baby birth date:', currentBaby.birthDate);
+    console.log('Calculated baby age:', babyAge, 'months');
+    console.log('Category min age:', categoryInfo.minAge);
+    
     if (babyAge < categoryInfo.minAge) {
         showAlert('Age Restriction', 
             `This product category is recommended for babies ${categoryInfo.minAge}+ months. Your baby is ${babyAge} months old.`);
@@ -1252,8 +1256,7 @@ function formatDate(date) {
 function calculateBabyAge(birthDate) {
     const birth = new Date(birthDate);
     const today = new Date();
-    const ageInMonths = (today.getFullYear() - birth.getFullYear()) * 12 + 
-                       (today.getMonth() - birth.getMonth());
+    const ageInMonths = Math.floor((today - birth) / (1000 * 60 * 60 * 24 * 30.44));
     return Math.max(0, ageInMonths);
 }
 
