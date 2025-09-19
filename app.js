@@ -1449,9 +1449,24 @@ function showInstallOptions() {
         if (installBtn) installBtn.style.display = 'block';
         if (installInfo) installInfo.style.display = 'none';
     } else {
-        // Show manual install instructions
-        if (installBtn) installBtn.style.display = 'none';
-        if (installInfo) installInfo.style.display = 'block';
+        // Check if we're in development mode or if user has already seen the message
+        const hasSeenInstallMessage = localStorage.getItem('hasSeenInstallMessage');
+        const isLocalhost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' ||
+                           window.location.hostname === '0.0.0.0';
+        
+        // Don't show manual install instructions if:
+        // 1. User has already seen the message
+        // 2. We're running locally (development)
+        // 3. The app is already working fine
+        if (hasSeenInstallMessage || isLocalhost) {
+            if (installBtn) installBtn.style.display = 'none';
+            if (installInfo) installInfo.style.display = 'none';
+        } else {
+            // Show manual install instructions
+            if (installBtn) installBtn.style.display = 'none';
+            if (installInfo) installInfo.style.display = 'block';
+        }
     }
 }
 
@@ -1491,6 +1506,15 @@ if (installBtn) {
             }
         }
     });
+}
+
+// Hide install message permanently
+function hideInstallMessage() {
+    localStorage.setItem('hasSeenInstallMessage', 'true');
+    const installInfo = document.getElementById('install-info');
+    if (installInfo) {
+        installInfo.style.display = 'none';
+    }
 }
 
 // Check install status on page load
